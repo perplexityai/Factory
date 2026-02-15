@@ -175,9 +175,7 @@ extension FactoryModifying {
             case .arg, .args, .device, .simulator:
                 registration.context(context, key: registration.key, factory: factory)
             default:
-                #if DEBUG
                 registration.context(context, key: registration.key, factory: factory)
-                #endif
                 break
             }
         }

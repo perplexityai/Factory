@@ -86,11 +86,21 @@ public struct FactoryRegistration<P,T>: Sendable {
             traceNewType = "O" // .onTest, .onDebug, etc.
             #endif
             current = found.factory
+        } else if let found = options?.factoryForCurrentContext()?.untypedFactory as? @Sendable (P) -> T {
+            #if DEBUG
+            traceNewType = "O" // .onTest, .onDebug, etc. (cross-module)
+            #endif
+            current = found
         } else if let found = manager.registrations[key] as? TypedFactory<P,T> {
             #if DEBUG
             traceNewType = "R" // .register {}
             #endif
             current = found.factory
+        } else if let found = manager.registrations[key]?.untypedFactory as? @Sendable (P) -> T {
+            #if DEBUG
+            traceNewType = "R" // .register {} (cross-module)
+            #endif
+            current = found
         } else {
             #if DEBUG
             traceNewType = "F" // Factory { ... }
@@ -341,14 +351,12 @@ extension FactoryOptions {
             }
         }
         if let contexts = contexts, !contexts.isEmpty {
-            #if DEBUG
             if FactoryContext.current.isPreview, let found = contexts["preview"] {
                 return found
             }
             if FactoryContext.current.isTest, let found = contexts["test"] {
                 return found
             }
-            #endif
             if FactoryContext.current.isSimulator, let found = contexts["simulator"] {
                 return found
             }
@@ -378,8 +386,11 @@ internal struct FactoryDebugInformation {
 #endif
 
 // Internal Factory type
-internal protocol AnyFactory {}
+internal protocol AnyFactory {
+    var untypedFactory: Any { get }
+}
 
 internal struct TypedFactory<P,T>: AnyFactory {
     let factory: @Sendable (P) -> T
+    var untypedFactory: Any { factory }
 }
