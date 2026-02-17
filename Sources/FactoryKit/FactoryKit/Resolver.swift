@@ -69,6 +69,8 @@ extension Resolving {
             let key = FactoryKey(type: T.self, key: globalResolverKey)
             if let factory = manager.registrations[key] as? TypedFactory<Void,T> {
                 return Factory(FactoryRegistration<Void,T>(key: globalResolverKey, container: self, factory: factory.factory))
+            } else if let factory = manager.registrations[key]?.untypedFactory as? @Sendable (Void) -> T {
+                return Factory(FactoryRegistration<Void,T>(key: globalResolverKey, container: self, factory: factory))
             }
             // otherwise return nil
             return nil
