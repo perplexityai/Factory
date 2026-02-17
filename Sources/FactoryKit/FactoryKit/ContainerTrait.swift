@@ -24,7 +24,8 @@
 // THE SOFTWARE.
 //
 
-#if canImport(Testing)
+#if DEBUG
+#if swift(>=6.1)
 
 import Testing
 
@@ -78,4 +79,5 @@ extension Trait where Self == ContainerTrait<Container> {
     }
 }
 
+#endif
 #endif
