@@ -47,10 +47,7 @@ let package = Package(
             name: "FactoryKit",
             dependencies: [],
             path: "Sources/FactoryKit",
-            resources: [.copy("PrivacyInfo.xcprivacy")],
-            linkerSettings: [
-                .unsafeFlags(["-weak_framework", "Testing"], .when(configuration: .debug))
-            ]
+            resources: [.copy("PrivacyInfo.xcprivacy")]
         ),
         .target(
             name: "FactoryTesting",
