@@ -25,7 +25,7 @@
 //
 
 #if DEBUG
-#if canImport(Testing)
+#if swift(>=6.1)
 
 import Testing
 
